@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ストップウォッチ</title>
+  <style>
+    body { text-align: center; font-size: 2em; padding-top: 40px;}
+    #timer {
+      font-size: 8.6em;
+      font-weight: bold;
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+    }
+    button {
+      font-size: 1.0em;
+      margin: 0 10px;
+      padding: 8px 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="timer">00:00.00</div>
+  <button onclick="start()">スタート</button>
+  <button onclick="stop()">ストップ</button>
+  <button onclick="reset()">リセット</button>
+
+  <script>
+    let startTime = 0;
+    let elapsed = 0;
+    let timerId = null;
+
+    function update() {
+      const now = Date.now();
+      const diff = elapsed + (timerId ? now - startTime : 0);
+      const ms = Math.floor((diff % 1000) / 10);
+      const s = Math.floor(diff / 1000) % 60;
+      const m = Math.floor(diff / 60000);
+      document.getElementById('timer').textContent =
+        `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}.${String(ms).padStart(2, '0')}`;
+    }
+
+    function start() {
+      if (timerId) return;
+      startTime = Date.now();
+      timerId = setInterval(update, 10); // 0.01秒ごとにupdate
+    }
+
+    function stop() {
+      if (!timerId) return;
+      elapsed += Date.now() - startTime;
+      clearInterval(timerId);
+      timerId = null;
+    }
+
+    function reset() {
+      elapsed = 0;
+      startTime = Date.now();
+      update();
+    }
+
+    update();
+  </script>
+</body>
+</html>
