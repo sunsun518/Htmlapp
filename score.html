@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>スコア管理</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 40px;
+      font-size: 2.2em;
+      background: #fff;
+    }
+    .teams-row {
+      display: flex;
+      justify-content: center;
+      gap: 80px; /* チーム同士の間隔 */
+      margin-top: 40px;
+    }
+    .team {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 150px;
+    }
+    .team-name {
+      margin-bottom: 18px;
+      font-size: 1.1em;
+      font-weight: bold;
+      letter-spacing: 2px;
+      white-space: nowrap; /* 改行させない */
+    }
+    .score-box {
+      font-size: 3em;              /* 数字も少し大きめ */
+      margin: 20px 0;
+      font-weight: bold;
+      border-radius: 18px;
+      display: inline-block;
+      width: 100px;                /* 四角の幅 */
+      height: 100px;               /* 四角の高さ */
+      line-height: 100px;          /* 数字の縦中央寄せ */
+      background: #fff;
+      box-shadow: 2px 2px 12px #eee;
+      margin-bottom: 16px;
+      margin-top: 16px;
+      vertical-align: middle;
+      transition: background 0.2s;
+    }
+    .score-red { color: #d32f2f; }
+    .score-blue { color: #1976d2; }
+    .score-green { color: #388e3c; }
+    .score-orange { color: #f57c00; }
+
+    .score-btn {
+      font-size: 2em;
+      width: 56px;
+      height: 44px;
+      margin: 0;
+      padding: 0;
+      border-radius: 8px;
+      border: none;
+      background: #f5f5f5;
+      box-shadow: 1px 1px 5px #eee;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: background 0.2s;
+      user-select: none;
+    }
+    .score-btn:active {
+      background: #d0d0d0;
+    }
+    .btn-label {
+      /* ＋－のフォントサイズをここで調整します */
+      font-size: 0.7em; /* 小さくしたい場合ここをさらに小さくできます */
+      font-weight: bold;
+      color: #333;
+      line-height: 1;
+    }
+    .btn-bottom {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1 style="font-size:2.2em;">チーム対抗レクリエーション</h1>
+
+  <div class="teams-row" id="teams"></div>
+
+  <script>
+    const teams = [
+      { name: "ＵＳＭＨ", score: 0, color: "score-red" },
+      { name: "マルエツ", score: 0, color: "score-blue" },
+      { name: "カスミ",     score: 0, color: "score-green" },
+      { name: "いなげや",     score: 0, color: "score-orange" }
+    ];
+
+    function renderTeams() {
+      const container = document.getElementById("teams");
+      container.innerHTML = "";
+
+      teams.forEach((team, index) => {
+        const teamDiv = document.createElement("div");
+        teamDiv.className = "team";
+        teamDiv.innerHTML = `
+          <div class="team-name">${team.name}</div>
+          <button class="score-btn" onclick="changeScore(${index}, 1)">
+            <span class="btn-label">＋</span>
+          </button>
+          <div class="score-box ${team.color}" id="score-${index}">${team.score}</div>
+          <button class="score-btn btn-bottom" onclick="changeScore(${index}, -1)">
+            <span class="btn-label">－</span>
+          </button>
+        `;
+        container.appendChild(teamDiv);
+      });
+    }
+
+    window.changeScore = function(index, delta) {
+      teams[index].score += delta;
+      document.getElementById(`score-${index}`).textContent = teams[index].score;
+    }
+
+    renderTeams();
+  </script>
+</body>
+</html>
