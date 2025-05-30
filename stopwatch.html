@@ -4,15 +4,15 @@
   <meta charset="UTF-8">
   <title>ストップウォッチ</title>
   <style>
-    body { text-align: center; font-size: 2em; padding-top: 40px;}
+    body { text-align: center; font-size: 2em; padding-top: 40px; transition: background 0.2s; }
     #timer {
-      font-size: 8.6em;
+      font-size: 2.6em;
       font-weight: bold;
       letter-spacing: 2px;
       margin-bottom: 20px;
     }
     button {
-      font-size: 1.0em;
+      font-size: 1.3em;
       margin: 0 10px;
       padding: 8px 20px;
     }
@@ -28,21 +28,31 @@
     let startTime = 0;
     let elapsed = 0;
     let timerId = null;
+    let yellowed = false; // 一度だけ色を変えるフラグ
 
     function update() {
       const now = Date.now();
       const diff = elapsed + (timerId ? now - startTime : 0);
+
       const ms = Math.floor((diff % 1000) / 10);
       const s = Math.floor(diff / 1000) % 60;
       const m = Math.floor(diff / 60000);
+      const totalSeconds = (m * 60) + s + ms / 100;
+
       document.getElementById('timer').textContent =
         `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}.${String(ms).padStart(2, '0')}`;
+
+      // ★ 32.22秒になったら背景を黄色に
+      if (!yellowed && Math.abs(totalSeconds - 32.22) < 0.01) {
+        document.body.style.background = "yellow";
+        yellowed = true;
+      }
     }
 
     function start() {
       if (timerId) return;
       startTime = Date.now();
-      timerId = setInterval(update, 10); // 0.01秒ごとにupdate
+      timerId = setInterval(update, 10);
     }
 
     function stop() {
@@ -55,6 +65,8 @@
     function reset() {
       elapsed = 0;
       startTime = Date.now();
+      yellowed = false;
+      document.body.style.background = ""; // 背景色リセット
       update();
     }
 
