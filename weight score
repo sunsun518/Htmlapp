@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ダイエット勝負ポイント計算</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+    input[type="text"] {
+      width: 80px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h2>ダイエット勝負：ポイント計算</h2>
+  <table id="resultTable">
+    <thead>
+      <tr>
+        <th>名前</th>
+        <th>スタート体重 (kg)</th>
+        <th>最終体重 (kg)</th>
+        <th>ポイント</th>
+      </tr>
+    </thead>
+    <tbody id="table-body">
+      <tr data-name="西田" data-start="70.0" data-coeff="1.8">
+        <td>西田</td>
+        <td>70.0</td>
+        <td><input type="text" class="goal"></td>
+        <td class="point">-</td>
+      </tr>
+      <tr data-name="謙吾" data-start="92.1" data-coeff="1.2">
+        <td>謙吾</td>
+        <td>92.1</td>
+        <td><input type="text" class="goal"></td>
+        <td class="point">-</td>
+      </tr>
+      <tr data-name="駿" data-start="91.8" data-coeff="1.0">
+        <td>駿</td>
+        <td>91.8</td>
+        <td><input type="text" class="goal"></td>
+        <td class="point">-</td>
+      </tr>
+      <tr data-name="葉山" data-start="80.2" data-coeff="1.4">
+        <td>葉山</td>
+        <td>80.2</td>
+        <td><input type="text" class="goal"></td>
+        <td class="point">-</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <button onclick="calculateAll()">計算開始</button>
+
+  <script>
+    function calculateAll() {
+      const tbody = document.getElementById('table-body');
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+
+      // ポイントを計算
+      const results = rows.map(row => {
+        const name = row.dataset.name;
+        const start = parseFloat(row.dataset.start);
+        const coeff = parseFloat(row.dataset.coeff);
+        const input = row.querySelector('.goal');
+        const pointCell = row.querySelector('.point');
+        const goal = parseFloat(input.value);
+
+        let point = null;
+        if (!isNaN(goal)) {
+          point = ((goal - start) / start) * coeff * -100;
+          pointCell.textContent = point.toFixed(2);
+        } else {
+          pointCell.textContent = '-';
+        }
+
+        return { row, point: isNaN(point) ? -Infinity : point };
+      });
+
+      // ポイントの大きい順に並び替え
+      results.sort((a, b) => b.point - a.point);
+
+      // 並び替え後に tbody に反映
+      tbody.innerHTML = '';
+      results.forEach(result => {
+        tbody.appendChild(result.row);
+      });
+    }
+  </script>
+</body>
+</html>
